@@ -1,0 +1,14 @@
+---
+import { getTranslation } from "../functions/translations";
+
+const { locale } = Astro.props;
+const title = getTranslation(locale, "heroTitle");
+
+---
+
+
+
+<div class="bg-red-300 max-w-screen-lg mx-auto">
+    <h2>{title}</h2>
+
+</div>

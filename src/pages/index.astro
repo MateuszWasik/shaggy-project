@@ -1,11 +1,43 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import HeroSection from '../components/HeroSection.astro';
+import ImageTextSection from '../components/ImageTextSection.astro';
+import {getCollection} from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import "../styles/global.css";
+
+const page = await getCollection('pages', (entry) => entry.id === 'index.pl.md');
+// console.log(page)
+const {title, heroText, sections} = page[0].data;
+const switchLangUrl = '/en' // 'https://polskastrona-en.pl';
+const currentLang = 'Polish';
+
+const sectionContents = await Promise.all(
+    sections.map(async (section) => {
+        console.log(section)
+        const content = await getCollection('sections', (entry) => entry.id === section.contentFile);
+        console.log(content[0].data)
+        return content[0].data;
+    })
+);
 ---
-
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{title}</title>
+</head>
+<body>
+<!-- TODO: above should be in Layout.astro and removed before the final version -->
+    <main>
+        <HeroSection text={heroText} currentLang={currentLang} switchLangUrl={switchLangUrl}/>
+        {sectionContents.map((section, index) => (
+            sections[index].type === 'imageLeftTextRight' ? (
+                    <ImageTextSection imageSrc={section.imageSrc} text={section.text}/>
+            ) : sections[index].type === 'textLeftImageRight' ? (
+                    <ImageTextSection imageSrc={section.imageSrc} text={section.text} reverse={true}/>
+            ) : sections[index].type === 'hero' ? (
+                    <HeroSection text={section.text} currentLang={currentLang} switchLangUrl={switchLangUrl}/>
+            ) : null
+        ))}
+    </main>
+</body>
+</html>

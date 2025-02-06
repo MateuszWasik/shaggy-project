@@ -1,0 +1,40 @@
+---
+import HeroSection from '../../components/HeroSection.astro';
+import ImageTextSection from '../../components/ImageTextSection.astro';
+import { getCollection } from 'astro:content';
+
+import "../../styles/global.css";
+
+const page = await getCollection('pages', (entry) => entry.id === 'index.en.md');
+const { title, heroText, sections } = page[0].data;
+const switchLangUrl = '/'; // 'https://polskastrona.pl';
+const currentLang = 'English';
+
+const sectionContents = await Promise.all(
+    sections.map(async (section) => {
+        const content = await getCollection('sections', (entry) => entry.id === section.contentFile);
+        return content[0].data;
+    })
+);
+---
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{title}</title>
+</head>
+<body>
+<!-- TODO: above should be in Layout.astro and removed before the final version -->
+    <main>
+        <HeroSection text={heroText} currentLang={currentLang} switchLangUrl={switchLangUrl} />
+        {sectionContents.map((section, index) => (
+            sections[index].type === 'imageLeftTextRight' ? (
+                    <ImageTextSection imageSrc={section.imageSrc} text={section.text} />
+            ) : sections[index].type === 'textLeftImageRight' ? (
+                    <ImageTextSection imageSrc={section.imageSrc} text={section.text} reverse={true} />
+            ) : sections[index].type === 'hero' ? (
+                    <HeroSection text={section.text} currentLang={currentLang} switchLangUrl={switchLangUrl} />
+            ) : null
+        ))}
+    </main>
+</body>
+</html>

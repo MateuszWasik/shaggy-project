@@ -2,10 +2,10 @@
 const {text, currentLang, switchLangUrl} = Astro.props;
 ---
 
-<div class="bg-red-300 max-w-screen-lg mx-auto">
+<section class="bg-red-300 max-w-screen-lg mx-auto">
     <h2>{text}</h2>
     <div>
-        {currentLang === 'English' ? (
+        {currentLang === 'en' ? (
                 <>
                     <p>Current Language: English</p>
                     <a href={switchLangUrl}>Polski</a>
@@ -17,4 +17,4 @@ const {text, currentLang, switchLangUrl} = Astro.props;
                 </>
         )}
     </div>
-</div>
+</section>

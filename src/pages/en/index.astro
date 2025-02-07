@@ -2,20 +2,16 @@
 import HeroSection from '../../components/HeroSection.astro';
 import ImageTextSection from '../../components/ImageTextSection.astro';
 import { getCollection } from 'astro:content';
+import { getSections } from '../../utils/sectionUtils';
 
 import "../../styles/global.css";
 
 const page = await getCollection('pages', (entry) => entry.id === 'index.en.md');
-const { title, heroText, sections } = page[0].data;
+const { title, heroText } = page[0].data;
 const switchLangUrl = '/'; // 'https://polskastrona.pl';
-const currentLang = 'English';
+const currentLang = 'en';
 
-const sectionContents = await Promise.all(
-    sections.map(async (section) => {
-        const content = await getCollection('sections', (entry) => entry.id === section.contentFile);
-        return content[0].data;
-    })
-);
+const { section1, section2, section3 } = await getSections(currentLang);
 ---
 <html lang="en">
 <head>
@@ -26,14 +22,9 @@ const sectionContents = await Promise.all(
 <!-- TODO: above should be in Layout.astro and removed before the final version -->
     <main>
         <HeroSection text={heroText} currentLang={currentLang} switchLangUrl={switchLangUrl} />
-        {sectionContents.map((section, index) => (
-            sections[index].type === 'imageLeftTextRight' ? (
-                    <ImageTextSection imageSrc={section.imageSrc} text={section.text} />
-            ) : sections[index].type === 'textLeftImageRight' ? (
-                    <ImageTextSection imageSrc={section.imageSrc} text={section.text} reverse={true} />
-            ) : sections[index].type === 'hero' ? (
-                    <HeroSection text={section.text} currentLang={currentLang} switchLangUrl={switchLangUrl} />
-            ) : null
+        <ImageTextSection imageSrc={section1.imageSrc} text={section1.text} />
+        <ImageTextSection imageSrc={section2.imageSrc} text={section2.text} reverse={true} />
+        <HeroSection text={section3.text} currentLang={currentLang} switchLangUrl={switchLangUrl} />
         ))}
     </main>
 </body>

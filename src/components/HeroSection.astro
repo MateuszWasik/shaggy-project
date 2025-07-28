@@ -1,0 +1,20 @@
+---
+const {text, currentLang, switchLangUrl} = Astro.props;
+---
+
+<section class="bg-red-300 max-w-screen-lg mx-auto">
+    <h2>{text}</h2>
+    <div>
+        {currentLang === 'en' ? (
+                <>
+                    <p>Current Language: English</p>
+                    <a href={switchLangUrl}>Polski</a>
+                </>
+        ) : (
+                <>
+                    <p>Aktualny język: Polski</p>
+                    <a href={switchLangUrl}>English</a>
+                </>
+        )}
+    </div>
+</section>

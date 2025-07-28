@@ -1,0 +1,30 @@
+---
+import HeroSection from '../../components/HeroSection.astro';
+import ImageTextSection from '../../components/ImageTextSection.astro';
+import { getCollection } from 'astro:content';
+import { getSections } from '../../utils/sectionUtils';
+
+import "../../styles/global.css";
+
+const page = await getCollection('pages', (entry) => entry.id === 'index.en.md');
+const { title, heroText } = page[0].data;
+const switchLangUrl = '/'; // 'https://polskastrona.pl';
+const currentLang: 'en' | 'pl' = 'en';
+
+const { section1, section2, section3 }  = await getSections(currentLang);
+---
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{title}</title>
+</head>
+<body>
+<!-- TODO: above should be in Layout.astro and removed before the final version -->
+    <main>
+        <HeroSection text={heroText} currentLang={currentLang} switchLangUrl={switchLangUrl} />
+        <ImageTextSection imageSrc={section1.imageSrc} text={section1.text} />
+        <ImageTextSection imageSrc={section2.imageSrc} text={section2.text} reverse={true} />
+        <HeroSection text={section3.text} currentLang={currentLang} switchLangUrl={switchLangUrl} />
+    </main>
+</body>
+</html>
